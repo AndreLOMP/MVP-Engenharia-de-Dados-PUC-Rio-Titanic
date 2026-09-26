@@ -38,7 +38,7 @@ A modelagem seguiu rigorosamente a **Arquitetura Medalhão**:
 
   ![Camada Silver](imagens/Camada_Silver.PNG)
 
-* **Camada Gold (Curated & Dimensional):** Estruturação do modelo dimensional em **Star Schema** para consumo em BI:
+* **Camada Gold (Curated & Dimensional):** Estruturação do modelo dimensional em **Star Schema** e geração das tabelas agregadas para consumo em BI:
   * **Tabela Fato:** `gold_fact_passenger_survival` (contém métricas e chaves estrangeiras).
   * **Tabelas Dimensão:** `gold_dim_passenger`, `gold_dim_pclass` e `gold_dim_embarked`.
   * **Tabelas Agregadas de Negócio:** `gold_survival_by_class`, `gold_survival_by_gender`, `gold_survival_by_age`, `gold_survival_by_family` e `gold_survival_by_fare`.
@@ -89,11 +89,15 @@ A subida e o processamento dos dados na nuvem foram realizados inteiramente dent
 
 * **1. Os passageiros de primeira classe sobreviveram mais do que os de outras classes?**
   
+  ![Código Camada Gold - Sobrevivência por Classe](imagens/Gold_1.PNG)
+
   ![Questão 1 - Sobrevivência por Classe](imagens/Questao1.PNG)
 
   * **Análise:** **Sim.** A classe social teve impacto direto na sobrevivência. A **1ª Classe** obteve uma taxa de sobrevivência de **62,96%** (136 de 216), a **2ª Classe** obteve **47,28%** (87 de 184) e a **3ª Classe** registrou a menor taxa, com apenas **24,24%** (119 de 491).
 
 * **2. A porcentagem de sobrevivência das mulheres foi maior do que a dos homens?**
+
+  ![Código Camada Gold - Sobrevivência por Gênero](imagens/Gold_2.PNG)
 
   ![Questão 2 - Sobrevivência por Gênero](imagens/Questao2.PNG)
 
@@ -101,17 +105,23 @@ A subida e o processamento dos dados na nuvem foram realizados inteiramente dent
 
 * **3. A idade foi um fator determinante?**
 
+  ![Código Camada Gold - Sobrevivência por Faixa Etária](imagens/Gold_3.PNG)
+
   ![Questão 3 - Sobrevivência por Faixa Etária](imagens/Questao3.PNG)
 
   * **Análise:** **Sim.** **Crianças (0-12 anos)** obtiveram a maior taxa de sobrevivência entre as faixas etárias (**57,97%** - 40 de 69). **Adolescentes (13-18 anos)** registraram **42,86%** (30 de 70), **Adultos (19-60 anos)** registraram **36,58%** (267 de 730), enquanto **Idosos (60+ anos)** tiveram a menor taxa (**22,73%** - 5 de 22).
 
 * **4. A presença de familiares facilitou ou dificultou a sobrevivência?**
 
+  ![Código Camada Gold - Sobrevivência por Estrutura Familiar](imagens/Gold_4.PNG)
+
   ![Questão 4 - Sobrevivência por Estrutura Familiar](imagens/Questao4.PNG)
 
   * **Análise:** **Pequenas famílias tiveram vantagem, enquanto famílias grandes sofreram prejuízo**. Passageiros em famílias de **2 a 4 pessoas** apresentaram taxas de sobrevivência elevadas (entre **55,28%** e **72,41%**). Passageiros **sozinhos (`Is_Alone = 1`)** tiveram **30,35%** de sobrevivência (163 de 537). Já grupos familiares com **5 ou mais membros** tiveram taxas reduzidas (famílias de 5 pessoas tiveram **20,00%**, famílias de 6 pessoas tiveram **13,64%**, e famílias com 8 ou 11 membros registraram **0%** de sobrevivência).
 
 * **5. A tarifa (`Fare`) paga influenciou diretamente na sobrevivência?**
+
+  ![Código Camada Gold - Sobrevivência por Quartil de Tarifa](imagens/Gold_5.PNG)
 
   ![Questão 5 - Sobrevivência por Quartil de Tarifa](imagens/Questao5.PNG)
 
@@ -129,5 +139,3 @@ O objetivo principal de construir um pipeline de Engenharia de Dados completo no
 A implementação da **Arquitetura Medalhão** permitiu manter a rastreabilidade desde o dado bruto na camada *Bronze*, passando pela limpeza na *Silver*, até a estruturação de um **Star Schema** maduro na camada *Gold*.
 
 Entre as principais dificuldades superadas, destacam-se a adequação do acesso ao sistema de arquivos no Databricks (evitando erros de permissão em caminhos locais), a escolha adequada das técnicas de imputação de nulos para a coluna `Age` e a aplicação correta do comando `display()` para renderização imediata das tabelas agregadas.
-
-Para trabalhos futuros, almeja-se implementar a orquestração automatizada desse pipeline via **Databricks Workflows (Jobs)** e a conexão direta do modelo Star Schema ao **Power BI** para disponibilização de dashboards interativos em tempo real.
