@@ -23,7 +23,7 @@ Para responder às dúvidas centrais sobre o desastre, foram estabelecidas **5 h
 #### Detalhamento
 
 ##### Busca e Coleta de Dados
-A base primária de dados utilizada foi o arquivo "Dataset_Titanic.csv", disponibilizado no link https://www.kaggle.com/datasets/yasserh/titanic-dataset. contendo 891 registros de passageiros e 12 colunas originais (`PassengerId`, `Survived`, `Pclass`, `Name`, `Sex`, `Age`, `SibSp`, `Parch`, `Ticket`, `Fare`, `Cabin` e `Embarked`) [1]. 
+A base primária utilizada foi o arquivo `Dataset_Titanic.csv`, contendo 891 registros de passageiros e 12 colunas originais (`PassengerId`, `Survived`, `Pclass`, `Name`, `Sex`, `Age`, `SibSp`, `Parch`, `Ticket`, `Fare`, `Cabin` e `Embarked`). 
 
 O arquivo foi ingerido no ambiente do Databricks via PySpark a partir de repositório remoto, garantindo persistência e processamento distribuído nativo.
 
@@ -31,7 +31,13 @@ O arquivo foi ingerido no ambiente do Databricks via PySpark a partir de reposit
 A modelagem seguiu rigorosamente a **Arquitetura Medalhão**:
 
 * **Camada Bronze (Raw):** Ingestão do CSV bruto para a tabela Delta `bronze_titanic`, preservando o esquema original e adicionando a coluna de auditoria `_ingestion_time`.
+
+  ![Camada Bronze](imagens/Camada_Bronze.PNG)
+
 * **Camada Silver (Cleaned & Enriched):** Tabela Delta `silver_titanic` com tratamento de nulos (`Age`, `Cabin`, `Embarked`) e criação de novas variáveis (*feature engineering*): `Has_Cabin`, `Title`, `Family_Size` e `Is_Alone`.
+
+  ![Camada Silver](imagens/Camada_Silver.PNG)
+
 * **Camada Gold (Curated & Dimensional):** Estruturação do modelo dimensional em **Star Schema** para consumo em BI:
   * **Tabela Fato:** `gold_fact_passenger_survival` (contém métricas e chaves estrangeiras).
   * **Tabelas Dimensão:** `gold_dim_passenger`, `gold_dim_pclass` e `gold_dim_embarked`.
@@ -73,8 +79,8 @@ A subida e o processamento dos dados na nuvem foram realizados inteiramente dent
 #### Análise
 
 ##### Qualidade dos Dados e Tratamentos
-* **`Age`:** Apresentava valores nulos no dataset original [1]. Foram preenchidos utilizando a mediana das idades para não distorcer a distribuição.
-* **`Cabin`:** Apresentava elevada taxa de valores ausentes [1]. Os nulos foram substituídos por `"Unknown"` e criou-se a flag `Has_Cabin` para indicar passageiros com cabine declarada.
+* **`Age`:** Apresentava valores nulos no dataset original. Foram preenchidos utilizando a mediana das idades para não distorcer a distribuição.
+* **`Cabin`:** Apresentava elevada taxa de valores ausentes. Os nulos foram substituídos por `"Unknown"` e criou-se a flag `Has_Cabin` para indicar passageiros com cabine declarada.
 * **`Embarked`:** Valores ausentes foram preenchidos com o porto mais frequente (`'S'` - Southampton).
 * **`Name`:** Foi extraído o título social (`Title`) via expressão regular (`r"([A-Za-z]+)\."`) para identificar classes sociais e faixas etárias específicas (ex: `Master` para meninos).
 * **`SibSp` e `Parch`:** Unificados na métrica de tamanho de família (`Family_Size`) para melhor interpretação sociológica.
@@ -85,35 +91,35 @@ A subida e o processamento dos dados na nuvem foram realizados inteiramente dent
   
   ![Questão 1 - Sobrevivência por Classe](imagens/Questao1.PNG)
 
-  * **Análise:** **Sim.** A classe social teve impacto direto na sobrevivência [2]. A **1ª Classe** obteve uma taxa de sobrevivência de **62,96%** (136 de 216), a **2ª Classe** obteve **47,28%** (87 de 184) e a **3ª Classe** registrou a menor taxa, com apenas **24,24%** (119 de 491) [2].
+  * **Análise:** **Sim.** A classe social teve impacto direto na sobrevivência. A **1ª Classe** obteve uma taxa de sobrevivência de **62,96%** (136 de 216), a **2ª Classe** obteve **47,28%** (87 de 184) e a **3ª Classe** registrou a menor taxa, com apenas **24,24%** (119 de 491).
 
 * **2. A porcentagem de sobrevivência das mulheres foi maior do que a dos homens?**
 
   ![Questão 2 - Sobrevivência por Gênero](imagens/Questao2.PNG)
 
-  * **Análise:** **Sim.** O gênero foi a variável de maior peso [3]. Das 314 mulheres a bordo, **233 sobreviveram (74,20%)** [3]. Em contrapartida, dos 577 homens, apenas **109 sobreviveram (18,89%)** [3], refletindo a política de evacuação "mulheres e crianças primeiro".
+  * **Análise:** **Sim.** O gênero foi a variável de maior peso. Das 314 mulheres a bordo, **233 sobreviveram (74,20%)**. Em contrapartida, dos 577 homens, apenas **109 sobreviveram (18,89%)**, refletindo a política de evacuação "mulheres e crianças primeiro".
 
 * **3. A idade foi um fator determinante?**
 
   ![Questão 3 - Sobrevivência por Faixa Etária](imagens/Questao3.PNG)
 
-  * **Análise:** **Sim.** **Crianças (0-12 anos)** obtiveram a maior taxa de sobrevivência entre as faixas etárias (**57,97%** - 40 de 69) [4]. **Adolescentes (13-18 anos)** registraram **42,86%** (30 de 70) [4], **Adultos (19-60 anos)** registraram **36,58%** (267 de 730) [4], enquanto **Idosos (60+ anos)** tiveram a menor taxa (**22,73%** - 5 de 22) [4].
+  * **Análise:** **Sim.** **Crianças (0-12 anos)** obtiveram a maior taxa de sobrevivência entre as faixas etárias (**57,97%** - 40 de 69). **Adolescentes (13-18 anos)** registraram **42,86%** (30 de 70), **Adultos (19-60 anos)** registraram **36,58%** (267 de 730), enquanto **Idosos (60+ anos)** tiveram a menor taxa (**22,73%** - 5 de 22).
 
 * **4. A presença de familiares facilitou ou dificultou a sobrevivência?**
 
   ![Questão 4 - Sobrevivência por Estrutura Familiar](imagens/Questao4.PNG)
 
-  * **Análise:** **Pequenas famílias tiveram vantagem, enquanto famílias grandes sofreram prejuízo** [5]. Passageiros em famílias de **2 a 4 pessoas** apresentaram taxas de sobrevivência elevadas (entre **55,28%** e **72,41%**) [5]. Passageiros **sozinhos (`Is_Alone = 1`)** tiveram **30,35%** de sobrevivência (163 de 537) [5]. Já grupos familiares com **5 ou mais membros** tiveram taxas reduzidas (famílias de 5 pessoas tiveram **20,00%**, famílias de 6 pessoas tiveram **13,64%**, e famílias com 8 ou 11 membros registraram **0%** de sobrevivência) [5].
+  * **Análise:** **Pequenas famílias tiveram vantagem, enquanto famílias grandes sofreram prejuízo**. Passageiros em famílias de **2 a 4 pessoas** apresentaram taxas de sobrevivência elevadas (entre **55,28%** e **72,41%**). Passageiros **sozinhos (`Is_Alone = 1`)** tiveram **30,35%** de sobrevivência (163 de 537). Já grupos familiares com **5 ou mais membros** tiveram taxas reduzidas (famílias de 5 pessoas tiveram **20,00%**, famílias de 6 pessoas tiveram **13,64%**, e famílias com 8 ou 11 membros registraram **0%** de sobrevivência).
 
 * **5. A tarifa (`Fare`) paga influenciou diretamente na sobrevivência?**
 
   ![Questão 5 - Sobrevivência por Quartil de Tarifa](imagens/Questao5.PNG)
 
-  * **Análise:** **Sim.** Ao dividir os bilhetes em quartis de tarifa [6]:
-    * **1º Quartil (tarifa min 0 - max 7.9):** **19,73%** de sobrevivência (44 de 223) [6].
-    * **2º Quartil (tarifa min 7.93 - max 14.45):** **30,04%** de sobrevivência (67 de 223) [6].
-    * **3º Quartil (tarifa min 14.45 - max 31.00):** **45,74%** de sobrevivência (102 de 223) [6].
-    * **4º Quartil (tarifa min 31.28 - max 512.33):** **58,11%** de sobrevivência (129 de 222) [6].
+  * **Análise:** **Sim.** Ao dividir os bilhetes em quartis de tarifa:
+    * **1º Quartil (tarifa min 0 - max 7.9):** **19,73%** de sobrevivência (44 de 223).
+    * **2º Quartil (tarifa min 7.93 - max 14.45):** **30,04%** de sobrevivência (67 de 223).
+    * **3º Quartil (tarifa min 14.45 - max 31.00):** **45,74%** de sobrevivência (102 de 223).
+    * **4º Quartil (tarifa min 31.28 - max 512.33):** **58,11%** de sobrevivência (129 de 222).
 
 ---
 
