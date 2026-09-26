@@ -23,7 +23,7 @@ Para responder às dúvidas centrais sobre o desastre, foram estabelecidas **5 h
 #### Detalhamento
 
 ##### Busca e Coleta de Dados
-A base primária utilizada foi o arquivo `Dataset_Titanic.csv` [1], contendo 891 registros de passageiros e 12 colunas originais (`PassengerId`, `Survived`, `Pclass`, `Name`, `Sex`, `Age`, `SibSp`, `Parch`, `Ticket`, `Fare`, `Cabin` e `Embarked`) [1]. 
+A base primária de dados utilizada foi o arquivo "Dataset_Titanic.csv", disponibilizado no link https://www.kaggle.com/datasets/yasserh/titanic-dataset. contendo 891 registros de passageiros e 12 colunas originais (`PassengerId`, `Survived`, `Pclass`, `Name`, `Sex`, `Age`, `SibSp`, `Parch`, `Ticket`, `Fare`, `Cabin` e `Embarked`) [1]. 
 
 O arquivo foi ingerido no ambiente do Databricks via PySpark a partir de repositório remoto, garantindo persistência e processamento distribuído nativo.
 
