@@ -139,3 +139,5 @@ O objetivo principal de construir um pipeline de Engenharia de Dados completo no
 A implementação da **Arquitetura Medalhão** permitiu manter a rastreabilidade desde o dado bruto na camada *Bronze*, passando pela limpeza na *Silver*, até a estruturação de um **Star Schema** maduro na camada *Gold*.
 
 Entre as principais dificuldades superadas, destacam-se a adequação do acesso ao sistema de arquivos no Databricks (evitando erros de permissão em caminhos locais), a escolha adequada das técnicas de imputação de nulos para a coluna `Age` e a aplicação correta do comando `display()` para renderização imediata das tabelas agregadas.
+
+Para trabalhos futuros, almeja-se implementar a orquestração automatizada desse pipeline via **Databricks Workflows (Jobs)** e a conexão direta do modelo Star Schema ao **Power BI** para disponibilização de dashboards interativos em tempo real.
