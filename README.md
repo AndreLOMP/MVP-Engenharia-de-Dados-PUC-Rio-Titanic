@@ -134,6 +134,14 @@ A subida e o processamento dos dados na nuvem foram realizados inteiramente dent
 
 ---
 
+#### Conclusão (Principais Achados)
+A análise dos dados na camada Gold revelou padrões sociais e econômicos marcantes que definiram as chances de sobrevivência no naufrágio do Titanic:
+
+1. **Gênero como Variável Predominante:** O sexo do passageiro foi o fator de maior impacto isolado. As mulheres registraram **74,20%** de sobrevivência contra apenas **18,89%** dos homens, comprovando o cumprimento rigoroso da diretriz militar de salvamento "mulheres e crianças primeiro" [10].
+2. **Priorização Hierárquica por Idade:** Crianças (0-12 anos) obtiveram a maior taxa de sobrevivência entre as faixas etárias (**57,97%**), enquanto idosos acima de 60 anos tiveram o menor índice (**22,73%**), demonstrando que a vulnerabilidade etária foi considerada no acesso aos botes [11].
+3. **Disparidade Socioeconômica (Classe e Tarifa):** A posição social e o poder aquisitivo ditaram o acesso aos recursos de emergência. Passageiros da **1ª classe (62,96%)** e do **4º quartil de tarifa (58,11%)** sobreviveram em proporções significativamente superiores aos passageiros da **3ª classe (24,24%)** e do **1º quartil de tarifa (19,73%)** [9, 13].
+4. **Impacto do Tamanho Familiar:** Grupos familiares reduzidos (2 a 4 pessoas) obtiveram os melhores índices de sobrevivência (até **72,41%**), beneficiando-se da cooperação mútua sem perder a agilidade [12]. Por outro lado, viajantes solitários (**30,35%**) e famílias muito numerosas (**0%** para 8 ou 11 membros) enfrentaram os piores cenários de evacuação [12].
+
 #### Autoavaliação
 O objetivo principal de construir um pipeline de Engenharia de Dados completo no Databricks utilizando PySpark e responder a todas as perguntas de negócio foi atingido com sucesso.
 
