@@ -8,7 +8,7 @@ A análise desses dados busca entender os fatores socioeconômicos e demográfic
 ---
 
 #### Objetivo
-O objetivo deste trabalho é processar, limpar, modelar e analisar o conjunto de dados do Titanic, transformando dados brutos em visões analíticas de negócio prontas para consumo.
+O objetivo deste trabalho é processar, limpar, modelar e analisar o conjunto de dados do Titanic, transformando dados brutos em visões analíticas de negócio prontas para consumo e entender quais fatores mais influenciaram na sobrevivencia dos passageiros.
 
 Para responder às dúvidas centrais sobre o desastre, foram estabelecidas **5 hipóteses/perguntas de negócio**:
 
