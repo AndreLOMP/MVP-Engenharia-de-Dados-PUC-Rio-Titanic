@@ -1,7 +1,7 @@
 # MVP Engenharia de Dados - Análise de Sobrevivência do Titanic
 
 #### Introdução
-Neste MVP são explorados os dados do histórico de passageiros do fatídico desastre do **RMS Titanic**. O projeto foi construído utilizando a plataforma **Databricks** e a linguagem **PySpark**, aplicando os conceitos de Engenharia de Dados modernizados pela **Arquitetura Medalhão** (camadas *Bronze*, *Silver* e *Gold*) e modelagem dimensional em **Star Schema** (Esquema Estrela).
+Neste MVP são explorados os dados do histórico de passageiros do fatídico desastre do **RMS Titanic**. O projeto foi construído utilizando a plataforma **Databricks** e a linguagem **PySpark**, aplicando os conceitos de Engenharia de Dados modernizados pela **Arquitetura Medalhão** e modelagem dimensional em **Star Schema**.
 
 A análise desses dados busca entender os fatores socioeconômicos e demográficos que influenciaram diretamente nas chances de sobrevivência dos passageiros durante o naufrágio.
 
@@ -23,18 +23,18 @@ Para responder às dúvidas centrais sobre o desastre, foram estabelecidas **5 h
 #### Detalhamento
 
 ##### Busca e Coleta de Dados
-A base primária utilizada foi o arquivo `Dataset_Titanic.csv`, contendo 891 registros de passageiros e 12 colunas originais (`PassengerId`, `Survived`, `Pclass`, `Name`, `Sex`, `Age`, `SibSp`, `Parch`, `Ticket`, `Fare`, `Cabin` e `Embarked`). 
+A base primária utilizada foi o arquivo `Dataset_Titanic.csv`, disponivel no site https://www.kaggle.com/datasets/yasserh/titanic-dataset. Esse dataset contem 891 registros de passageiros e 12 colunas originais (`PassengerId`, `Survived`, `Pclass`, `Name`, `Sex`, `Age`, `SibSp`, `Parch`, `Ticket`, `Fare`, `Cabin` e `Embarked`). 
 
 O arquivo foi ingerido no ambiente do Databricks via PySpark a partir de repositório remoto, garantindo persistência e processamento distribuído nativo.
 
-##### Modelagem (Arquitetura Medalhão & Star Schema)
+##### Modelagem
 A modelagem seguiu rigorosamente a **Arquitetura Medalhão**:
 
-* **Camada Bronze (Raw):** Ingestão do CSV bruto para a tabela Delta `bronze_titanic`, preservando o esquema original e adicionando a coluna de auditoria `_ingestion_time`.
+* **Camada Bronze:** Ingestão do CSV bruto para a tabela Delta `bronze_titanic`, preservando o esquema original e adicionando a coluna de auditoria `_ingestion_time`.
 
   ![Camada Bronze](imagens/Camada_Bronze.PNG)
 
-* **Camada Silver (Cleaned & Enriched):** Tabela Delta `silver_titanic` com tratamento de nulos (`Age`, `Cabin`, `Embarked`) e criação de novas variáveis (*feature engineering*): `Has_Cabin`, `Title`, `Family_Size` e `Is_Alone`.
+* **Camada Silver:** Tabela Delta `silver_titanic` com tratamento de nulos (`Age`, `Cabin`, `Embarked`) e criação de novas variáveis (*feature engineering*): `Has_Cabin`, `Title`, `Family_Size` e `Is_Alone`.
 
   ![Camada Silver](imagens/Camada_Silver.PNG)
 
@@ -69,10 +69,10 @@ A modelagem seguiu rigorosamente a **Arquitetura Medalhão**:
 
 A subida e o processamento dos dados na nuvem foram realizados inteiramente dentro do **Databricks**, utilizando **PySpark** e o formato de armazenamento **Delta Lake** para garantir transações ACID.
 
-##### Notebooks e Scripts do Projeto:
-1. **Ingestão Bronze:** Converte o CSV baixado em PySpark DataFrame, adiciona metadados de auditoria e grava a tabela `bronze_titanic`.
-2. **Transformação Silver:** Trata valores ausentes em `Age` (imputação por mediana), `Cabin` e `Embarked`, extrai recursos (*Title*, *Family_Size*, *Is_Alone*) e grava a tabela `silver_titanic`.
-3. **Modelagem Gold:** Constrói o modelo dimensional **Star Schema** (`fact` + `dims`) e gera as visões agregadas para responder às 5 perguntas de negócio com o comando `display()`.
+##### O que foi feito em cada camada:
+1. **Ingestão Bronze:** O arquivo CSV foi convertido em um dataframe PySpark e a tabela foi gravada como `bronze_titanic`.
+2. **Transformação Silver:** Tratamento de valores ausentes em `Age` (imputação por mediana), `Cabin` e `Embarked`, extração de recursos (*Title*, *Family_Size*, *Is_Alone*) e gravação da tabela `silver_titanic`.
+3. **Modelagem Gold:** Construção do modelo dimensional **Star Schema** (`fact` + `dims`) e geração de visões agregadas para responder às 5 perguntas de negócio com o comando `display()`.
 
 ---
 
@@ -109,7 +109,7 @@ A subida e o processamento dos dados na nuvem foram realizados inteiramente dent
 
   ![Questão 3 - Sobrevivência por Faixa Etária](imagens/Questao3.PNG)
 
-  * **Análise:** **Sim.** **Crianças (0-12 anos)** obtiveram a maior taxa de sobrevivência entre as faixas etárias (**57,97%** - 40 de 69). **Adolescentes (13-18 anos)** registraram **42,86%** (30 de 70), **Adultos (19-60 anos)** registraram **36,58%** (267 de 730), enquanto **Idosos (60+ anos)** tiveram a menor taxa (**22,73%** - 5 de 22).
+  * **Análise:** **Sim.** **Crianças (0-12 anos)** obtiveram a maior taxa de sobrevivência entre as faixas etárias (**57,97%** - 40 de 69). **Adolescentes (13-18 anos)** registraram **42,86%** (30 de 70), **Adultos (19-60 anos)** registraram **36,58%** (267 de 730), enquanto **Idosos (60+ anos)** tiveram a menor taxa (**22,73%** - 5 de 22, isso reforça ainda mais a hipótese de que os mais jovens foram evacuados primeiro junto com as mulheres.
 
 * **4. A presença de familiares facilitou ou dificultou a sobrevivência?**
 
@@ -117,7 +117,7 @@ A subida e o processamento dos dados na nuvem foram realizados inteiramente dent
 
   ![Questão 4 - Sobrevivência por Estrutura Familiar](imagens/Questao4.PNG)
 
-  * **Análise:** **Pequenas famílias tiveram vantagem, enquanto famílias grandes sofreram prejuízo**. Passageiros em famílias de **2 a 4 pessoas** apresentaram taxas de sobrevivência elevadas (entre **55,28%** e **72,41%**). Passageiros **sozinhos (`Is_Alone = 1`)** tiveram **30,35%** de sobrevivência (163 de 537). Já grupos familiares com **5 ou mais membros** tiveram taxas reduzidas (famílias de 5 pessoas tiveram **20,00%**, famílias de 6 pessoas tiveram **13,64%**, e famílias com 8 ou 11 membros registraram **0%** de sobrevivência).
+  * **Análise:** **Pequenas famílias tiveram taxa de sobrevivência mais alta, pessoas viajando sozinhas tiveram taxa de sobrevivência baixa e famílias grandes sofreram prejuízos**. Passageiros em famílias de **2 a 4 pessoas** apresentaram taxas de sobrevivência elevadas (entre **55,28%** e **72,41%**). Passageiros **sozinhos (`Is_Alone = 1`)** tiveram **30,35%** de sobrevivência (163 de 537). Já grupos familiares com **5 ou mais membros** tiveram taxas reduzidas (famílias de 5 pessoas tiveram **20,00%**, famílias de 6 pessoas tiveram **13,64%**, e famílias com 8 ou 11 membros registraram **0%** de sobrevivência, isso indica que pessoas sozinhas e com muitos familiares possivelmente tiveram dificuldades no desembarque, enquanto grupos de até 4 pessoas tiveram mais facilidade.
 
 * **5. A tarifa (`Fare`) paga influenciou diretamente na sobrevivência?**
 
@@ -130,6 +130,7 @@ A subida e o processamento dos dados na nuvem foram realizados inteiramente dent
     * **2º Quartil (tarifa min 7.93 - max 14.45):** **30,04%** de sobrevivência (67 de 223).
     * **3º Quartil (tarifa min 14.45 - max 31.00):** **45,74%** de sobrevivência (102 de 223).
     * **4º Quartil (tarifa min 31.28 - max 512.33):** **58,11%** de sobrevivência (129 de 222).
+    Isso mostra que sim! a tarifa foi um fator determinante para a sobrevivencia, ainda indicando que as pessoes que pagaram mais tiveram a taxa de sobrevivencia mais alta.
 
 ---
 
