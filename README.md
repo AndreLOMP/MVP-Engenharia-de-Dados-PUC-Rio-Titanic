@@ -134,7 +134,7 @@ A subida e o processamento dos dados na nuvem foram realizados inteiramente dent
 
 ---
 
-#### Conclusão (Principais Achados)
+#### Conclusão (Principais Informações encontradas)
 A análise dos dados na camada Gold revelou padrões sociais e econômicos marcantes que definiram as chances de sobrevivência no naufrágio do Titanic:
 
 1. **Gênero como Variável Predominante:** O sexo do passageiro foi o fator de maior impacto isolado. As mulheres registraram **74,20%** de sobrevivência contra apenas **18,89%** dos homens, comprovando o cumprimento rigoroso da diretriz militar de salvamento "mulheres e crianças primeiro".
